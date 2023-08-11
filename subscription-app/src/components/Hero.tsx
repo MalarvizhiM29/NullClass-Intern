@@ -49,7 +49,7 @@ const Hero:React.FC = () => {
               <input type="email" placeholder="Enter Email" className="popup-input" value={email} onChange={handleEmailChange}></input>
               </div>
               <div className="form-group">
-              <input type="password" placeholder="Enter Password" className="popup-input" value={password} onChange={handlePasswordChange}></input>
+              <input type="password" placeholder="Password: 5 Chars" className="popup-input" value={password} onChange={handlePasswordChange}></input>
               </div>
               <div className="popup-action">
                 <button type="submit" className="popup-action-button">
