@@ -1,17 +1,20 @@
 import express from "express";
 import {router as authRoutes} from "./routes/auth";
-import mongoose, { ConnectOptions } from "mongoose";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 const app = express();
-
 dotenv.config();
 
-app.use(express.json())
+app.use(express.json());
 app.use("/auth",authRoutes);
 
+const mongoURI = process.env.MONGO_URI;
+
 mongoose.connect(
-    "mongodb+srv://MALARVIZHI:Clustermalar@subapp.z9cn1na.mongodb.net/?retryWrites=true&w=majority", {
+    // "mongodb+srv://MALARVIZHI:Clustermalar@subapp.z9cn1na.mongodb.net/?retryWrites=true&w=majority", 
+    mongoURI as string,
+    {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     } as Parameters<typeof mongoose.connect>[1]
