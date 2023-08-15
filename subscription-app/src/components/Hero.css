@@ -113,3 +113,8 @@
   margin: 0.2rem;
   color: #fff;
 }
+
+.error-message {
+  color: red;
+  font-size: 1rem;
+}

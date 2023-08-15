@@ -1,13 +1,21 @@
-import "./Hero.css";
-import heroImage from "../assets/bg-image-new.jpg";
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import heroImage from "../assets/bg-image-new.jpg";
+import "./Hero.css";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context";
 
 const Hero: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoginForm, setIsLoginForm] = useState(true);
+  const [ErrorMessage, setErrorMessage] = useState("");
+
+  const navigate = useNavigate();
+  const [state, setState] = useContext(UserContext);
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
@@ -26,30 +34,53 @@ const Hero: React.FC = () => {
   };
 
   const handleClick = async () => {
-    try {
-      const response = await axios.post(
-        isLoginForm
-          ? "http://localhost:5000/auth/login"
-          : "http://localhost:5000/auth/signup",
-        {
-          email,
-          password,
-        }
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error:", error);
+    const response = await axios.post(
+      isLoginForm
+        ? "http://localhost:5000/auth/login"
+        : "http://localhost:5000/auth/signup",
+      {
+        email,
+        password,
+      }
+    );
+    console.log(response.data);
+
+    if (
+      response.data &&
+      response.data.errors &&
+      response.data.errors.length > 0
+    ) {
+      const errorMessage = response.data.errors[0].msg;
+      toast.error(errorMessage);
+      setErrorMessage(errorMessage);
+    } else {
+      toast.success(isLoginForm ? "Login successful!" : "Sign up successful!");
     }
+
+    setState({
+      ...state,
+      data: {
+        id: response.data.data.user.id,
+        email: response.data.data.user.email,
+      },
+      loading: false,
+      error: null,
+    });
+
+    localStorage.setItem("token", response.data.data.token);
+    axios.defaults.headers.common["authorization"] =
+      "Bearer ${response.data.data.token}";
+    navigate("/subscription");
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleClick();
   };
 
   return (
     <div className="hero">
-      <img src={heroImage} alt="image" className="hero-img"></img>
+      <img src={heroImage} alt="image" className="hero-img" />
       <div className={`hero-content ${isPopupOpen ? "blur" : ""}`}>
         <div className="content">
           <h2 className="disk">
@@ -62,7 +93,13 @@ const Hero: React.FC = () => {
           <button className="hero-button" onClick={togglePopup}>
             Login
           </button>
-          <button className="hero-button" onClick={togglePopup}>
+          <button
+            className="hero-button"
+            onClick={() => {
+              togglePopup();
+              setIsLoginForm(false);
+            }}
+          >
             Sign Up
           </button>
         </div>
@@ -71,7 +108,7 @@ const Hero: React.FC = () => {
         <div className="popup">
           <div className="popup-inner">
             <div className="popup-first">
-              <h3 className="popup-heading">Enter your email:</h3>
+              <h3 className="popup-heading">Enter your details:</h3>
               <button className="popup-close" onClick={togglePopup}>
                 X
               </button>
@@ -88,7 +125,7 @@ const Hero: React.FC = () => {
                   className="popup-input"
                   value={email}
                   onChange={handleEmailChange}
-                ></input>
+                />
               </div>
               <div className="form-group">
                 <input
@@ -97,8 +134,11 @@ const Hero: React.FC = () => {
                   className="popup-input"
                   value={password}
                   onChange={handlePasswordChange}
-                ></input>
+                />
               </div>
+              {ErrorMessage && (
+                <div className="error-message">{ErrorMessage}</div>
+              )}
               <div className="popup-action">
                 <button type="submit" className="popup-action-button">
                   {isLoginForm ? "Login" : "Sign Up"}
@@ -115,6 +155,7 @@ const Hero: React.FC = () => {
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };
