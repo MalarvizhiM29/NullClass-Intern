@@ -8,7 +8,7 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(403).json({
       errors: [
         {
-          msg: "unauthorized",
+          msg: "unauthorized: Token not found",
         },
       ],
     });
@@ -16,11 +16,15 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
 
   token = token.split(" ")[1];
 
+  console.log(token);
+
   try {
     const user = (await JWT.verify(
       token,
       process.env.JWT_SECRET as string
     )) as { email: string };
+
+    console.log(user);
 
     (req as Request & { user: { email: string } }).user = { email: user.email };
     next();
@@ -28,7 +32,7 @@ const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(403).json({
       errors: [
         {
-          msg: "unauthorized",
+          msg: "unauthorized: Invalid token",
         },
       ],
     });

@@ -3,7 +3,7 @@ import axios from "axios";
 import "./SubPlan.css";
 
 const SubPlan = () => {
-  const [prices, setPrices] = useState<any>([]);
+  const [prices, setPrices] = useState<any[]>([]);
 
   useEffect(() => {
     fetchPrices();
@@ -31,22 +31,27 @@ const SubPlan = () => {
   return (
     <div>
       <div className="plan-card">
-        {prices.map((prices: any) => (
-          <div className="combo-card">
-            <div className="card" key={prices.id}>
-              <p className="price-amount">
-                ₹{(prices.unit_amount / 100).toFixed(2)}
-              </p>
+        {prices.map((price: any) => {
+          return (
+            <div className="combo-card" key={price.id}>
+              <div className="card" key={`card-${price.id}`}>
+                <p className="price-amount">
+                  ₹{(price.unit_amount / 100).toFixed(2)}
+                </p>
+              </div>
+              <h3 className="nickname" key={`nickname-${price.id}`}>
+                {price.nickname}
+              </h3>
+              <button
+                className="plan-btn"
+                onClick={() => createSession(price.id)}
+                key={`button-${price.id}`}
+              >
+                Buy Now
+              </button>
             </div>
-            <h3 className="nickname">{prices.nickname}</h3>
-            <button
-              className="plan-btn"
-              onClick={() => createSession(prices.id)}
-            >
-              Buy Now
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

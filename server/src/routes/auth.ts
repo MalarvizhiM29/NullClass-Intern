@@ -7,8 +7,6 @@ import checkAuth from "../middleware/checkAuth";
 import { Request, Response } from "express";
 import stripe from "../utils/stripe";
 
-checkAuth;
-
 export const router = express.Router();
 
 router.post(

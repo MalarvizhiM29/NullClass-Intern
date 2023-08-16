@@ -1,5 +1,6 @@
 import express from "express";
 import User from "../models/user";
+//import MyPost from "../models/post";
 import checkAuth from "../middleware/checkAuth";
 import stripe from "../utils/stripe";
 
@@ -14,6 +15,13 @@ router.get("/prices", checkAuth, async (req, res) => {
 
 router.post("/session", checkAuth, async (req, res) => {
   const user = await User.findOne({ email: (req as any).user.email });
+
+  // MyPost.create({
+  //   title: "Payment details",
+  //   content: "How to add Stripe or Razopay",
+  //   access: "Gold",
+  // });
+
   const session = await stripe.checkout.sessions.create(
     {
       mode: "subscription",
@@ -32,7 +40,7 @@ router.post("/session", checkAuth, async (req, res) => {
       apiKey: process.env.STRIPE_SECRET_KEY,
     }
   );
-  return res.json({ session });
+  return res.json(session);
 });
 
 export default router;
