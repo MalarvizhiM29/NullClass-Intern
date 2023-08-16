@@ -5,6 +5,7 @@ interface User {
   data: {
     id: string;
     email: string;
+    customerStripeId: string;
   } | null;
   error: string | null;
   loading: boolean;

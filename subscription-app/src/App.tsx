@@ -7,6 +7,7 @@ import LandingPage from "./pages/LandingPage";
 import { UserProvider } from "./context";
 import SubscriptionPage from "./pages/Subscription";
 import { ProtectedRoute } from "./routes/ProtectedRoutes";
+import SubPlan from "./pages/SubPlan";
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/subscription" element={<ProtectedRoute />}>
               <Route path="/subscription" element={<SubscriptionPage />} />
+            </Route>
+            <Route path="/sub-plan" element={<ProtectedRoute />}>
+              <Route path="/sub-plan" element={<SubPlan />} />
             </Route>
           </Routes>
           <ToastContainer />
