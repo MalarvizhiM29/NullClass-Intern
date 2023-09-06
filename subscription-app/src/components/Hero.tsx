@@ -62,7 +62,7 @@ const Hero: React.FC = () => {
       data: {
         id: response.data.data.user.id,
         email: response.data.data.user.email,
-        customerStripeId: response.data.data.user.customerStripeId,
+        stripeCustomerId: response.data.data.user.stripeCustomerId,
       },
       loading: false,
       error: null,
